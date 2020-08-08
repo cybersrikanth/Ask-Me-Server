@@ -8,13 +8,19 @@ const answerSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        edited: {
+            type: Boolean,
+            default: false,
+        },
         questionId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "question",
+            required: true,
         },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",
+            required: true,
         },
     },
     { timestamps: true }

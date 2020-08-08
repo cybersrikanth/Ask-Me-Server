@@ -12,6 +12,10 @@ const questionSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        edited: {
+            type: Boolean,
+            default: false,
+        },
         userId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "user",

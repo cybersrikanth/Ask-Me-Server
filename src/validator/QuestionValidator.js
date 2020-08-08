@@ -32,6 +32,25 @@ class QuestionValidator {
 
         return await schema.validate(obj, STRIP_UNKNOWN);
     }
+
+    static async update(obj) {
+        const schema = yup.object({
+            title: yup
+                .string()
+                .trim()
+                .required()
+                .min(DEFAULT.TITLE_MIN)
+                .max(DEFAULT.TITLE_MAX),
+            description: yup
+                .string()
+                .trim()
+                .required()
+                .min(DEFAULT.DESC_MIN)
+                .max(DEFAULT.DESC_MAX),
+        });
+
+        return schema.validate(obj, STRIP_UNKNOWN);
+    }
 }
 
 module.exports = QuestionValidator;

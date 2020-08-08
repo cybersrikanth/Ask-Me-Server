@@ -16,11 +16,14 @@ const HTTP_ERROR_RESPONSE = {
 };
 
 // yup validator
-
 const STRIP_UNKNOWN = { stripUnknown: true };
+
+// questions
+const PAGE_LIMIT = 10;
 
 module.exports = {
     HTTP_SUCCESS_RESPONSE,
     HTTP_ERROR_RESPONSE,
     STRIP_UNKNOWN,
+    PAGE_LIMIT,
 };
