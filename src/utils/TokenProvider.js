@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
+const { SECRET, JWT_EXP } = require("./environment");
 
-const SECRET = process.env.SECRET || "secret";
-const EXP = process.env.EXP || "1d";
+const EXP = JWT_EXP;
 
 class TokenProvider {
     static getSecret(user) {

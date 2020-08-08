@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
+const { SALT_ROUNDS } = require("./environment");
 
-const ROUND = process.env.SALT_ROUND || 10;
+const ROUND = SALT_ROUNDS;
 
 class Hasher {
     static async hashPassword(password) {

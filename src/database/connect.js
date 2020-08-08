@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-
-const DB_URI = process.env.DB_URI;
+const { DB_URI } = require("../utils/environment");
 
 const DB_OPTIONS = {
     useCreateIndex: true,

@@ -13,7 +13,7 @@ class UserController {
             user = await UserValidator.signup(user);
             const newUser = new userModel(user);
             await newUser.save();
-            return httpResponse(HTTP_SUCCESS_RESPONSE.CREATED, newUser, res);
+            return httpResponse(HTTP_SUCCESS_RESPONSE.CREATED, "created", res);
         } catch (error) {
             if (error.code == 11000) error = USER_ERROR.CONFLICT;
             return httpResponse(
