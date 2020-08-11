@@ -17,11 +17,13 @@ class QuestionController {
             let tagsToAdd = [];
             question = await QuestionValidator.create(question);
             if (question.tagId && question.tagId.length) {
-                const tags = question.tagId.map((item) => item);
+                const tags = question.tagId.map((item) => ({ name: item }));
                 try {
                     await tagModel.insertMany(tags, { ordered: false });
                 } catch (error) {}
-                const tagObjects = await tagModel.find({ name: tags });
+                const tagObjects = await tagModel.find({
+                    name: question.tagId,
+                });
                 tagsToAdd = tagObjects.map((item) => item._id);
             }
             const newQuestion = new questionModel({
@@ -52,14 +54,21 @@ class QuestionController {
         try {
             const { id } = req.params;
             if (!isValidObjectId(id)) throw NOT_FOUND_ERROR;
-            const question = await questionModel.findById(id).populate([
-                { path: "tagId", select: "name" },
-                { path: "userId", select: "email" },
-                {
-                    path: "answerId",
-                    populate: { path: "userId", select: "email" },
-                },
-            ]);
+            const question = await questionModel
+                .findById(id)
+                .populate([
+                    { path: "tagId", select: "name" },
+                    { path: "userId", select: "email" },
+                    {
+                        path: "answerId",
+                        options: { sort: { createdAt: -1 } },
+                        populate: {
+                            path: "userId",
+                            select: "email",
+                        },
+                    },
+                ])
+                .select(["-createdAt", "-updatedAt", "-__v"]);
             if (!question) throw NOT_FOUND_ERROR;
             return httpResponse(HTTP_SUCCESS_RESPONSE.OK, question, res);
         } catch (error) {
@@ -81,8 +90,57 @@ class QuestionController {
                 .find()
                 .sort({ createdAt: -1 })
                 .skip(skip)
-                .limit(limit);
+                .limit(limit)
+                .populate("userId", ["email"])
+                .populate("tagId", ["name"]);
             return httpResponse(HTTP_SUCCESS_RESPONSE.OK, questions, res);
+        } catch (error) {
+            return httpResponse(
+                error.HTTP_CODE || HTTP_ERROR_RESPONSE.BAD_REQUEST,
+                error.message,
+                res
+            );
+        }
+    }
+
+    static async search(req, res) {
+        try {
+            let { keyword } = req.query;
+            keyword = await QuestionValidator.search(keyword);
+            let result;
+            if (keyword.slice(0, 1) === "#") {
+                result = await tagModel
+                    .find({
+                        name: { $regex: keyword.slice(1), $options: "i" },
+                    })
+                    .populate({
+                        path: "questionId",
+                        populate: { path: "tagId userId" },
+                    })
+                    .sort({ createdAt: -1 })
+                    .limit(25)
+                    .select(["-updatedAt", "-__v"]);
+                let questions = [];
+                const temp = {};
+                result.forEach((tag) => {
+                    tag.questionId.forEach((question) => {
+                        if (!temp[question._id]) {
+                            temp[question._id] = true;
+                            questions.push(question);
+                        }
+                    });
+                });
+                result = questions;
+            } else {
+                result = await questionModel
+                    .find({
+                        title: { $regex: keyword, $options: "i" },
+                    })
+                    // .select("title");
+                    .populate("userId", ["email"])
+                    .populate("tagId", ["name"]);
+            }
+            return httpResponse(HTTP_SUCCESS_RESPONSE.OK, result, res);
         } catch (error) {
             return httpResponse(
                 error.HTTP_CODE || HTTP_ERROR_RESPONSE.BAD_REQUEST,

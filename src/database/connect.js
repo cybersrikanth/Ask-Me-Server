@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
-const { DB_URI } = require("../utils/environment");
+const { DB_URI, TEST } = require("../utils/environment");
+const { Mockgoose } = require("mockgoose");
 
 const DB_OPTIONS = {
     useCreateIndex: true,

@@ -8,5 +8,6 @@ const userRoute = Router();
 userRoute.use(AuthMiddleware.validate);
 
 userRoute.post("/signout", UserController.signout);
+userRoute.get("/profile", UserController.profile);
 
 module.exports = userRoute;

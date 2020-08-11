@@ -7,6 +7,21 @@ const Hasher = require("../utils/Hasher");
 const TokenProvider = require("../utils/TokenProvider");
 
 class UserController {
+    static async profile(req, res) {
+        try {
+            const user = {
+                _id: req.user._id,
+                email: req.user.email,
+            };
+            return httpResponse(HTTP_SUCCESS_RESPONSE.OK, user, res);
+        } catch (error) {
+            return httpResponse(
+                error.HTTP_CODE || HTTP_ERROR_RESPONSE.BAD_REQUEST,
+                error.message,
+                res
+            );
+        }
+    }
     static async signup(req, res) {
         try {
             let { user } = req.body;

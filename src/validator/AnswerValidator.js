@@ -5,17 +5,11 @@ const DEFAULT = {
     MIN: 5,
     MAX: 100000,
 };
-const TAG = /^[a-zA-Z0-9_]*$/;
 
 class AnswerValidator {
     static async create(obj) {
         const schema = yup.object({
-            answer: yup
-                .string()
-                .trim()
-                .required()
-                .min(DEFAULT.MIN)
-                .max(DEFAULT.MAX),
+            answer: yup.string().required().min(DEFAULT.MIN).max(DEFAULT.MAX),
             questionId: yup.string().max(50).required(),
         });
 
@@ -24,12 +18,7 @@ class AnswerValidator {
 
     static async update(obj) {
         const schema = yup.object({
-            answer: yup
-                .string()
-                .trim()
-                .required()
-                .min(DEFAULT.MIN)
-                .max(DEFAULT.MAX),
+            answer: yup.string().required().min(DEFAULT.MIN).max(DEFAULT.MAX),
         });
 
         return schema.validate(obj, STRIP_UNKNOWN);

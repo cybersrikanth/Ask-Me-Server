@@ -1,13 +1,15 @@
 require("./utils/environment");
 const express = require("express");
+const cors = require("cors");
 const connect = require("./database/connect");
 const router = require("./router");
 const { PORT } = require("./utils/environment");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-const init = async () => {
+(async () => {
     try {
         await connect();
         console.log("db connection success");
@@ -16,9 +18,9 @@ const init = async () => {
         console.log("db connection failed");
         process.exit(1);
     }
-};
-
-init();
-
+})();
+app.disable("x-powered-by");
 
 app.listen(PORT, () => console.log("server running in port", PORT));
+
+module.exports = app;

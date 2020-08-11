@@ -39,7 +39,9 @@ class AnswerController {
         try {
             const { id } = req.params;
             if (!isValidObjectId(id)) throw ANSWER_ERROR.INVALID_QUESTION;
-            const answer = await answerModel.findById(id);
+            const answer = await answerModel
+                .findById(id)
+                .populate("questionId", ["title"]);
             if (!answer) throw NOT_FOUND_ERROR;
             return httpResponse(HTTP_SUCCESS_RESPONSE.OK, answer, res);
         } catch (error) {

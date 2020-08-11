@@ -5,6 +5,7 @@ const AuthMiddleware = require("../middleware/AuthMiddleware");
 const questionRoute = Router();
 
 questionRoute.get("/page/:page", QuestionController.readPage);
+questionRoute.get("/search", QuestionController.search);
 questionRoute.get("/:id", QuestionController.read);
 
 // middleware

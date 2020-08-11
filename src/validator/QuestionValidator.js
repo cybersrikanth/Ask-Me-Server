@@ -14,13 +14,11 @@ class QuestionValidator {
         const schema = yup.object({
             title: yup
                 .string()
-                .trim()
                 .required()
                 .min(DEFAULT.TITLE_MIN)
                 .max(DEFAULT.TITLE_MAX),
             description: yup
                 .string()
-                .trim()
                 .required()
                 .min(DEFAULT.DESC_MIN)
                 .max(DEFAULT.DESC_MAX),
@@ -37,18 +35,24 @@ class QuestionValidator {
         const schema = yup.object({
             title: yup
                 .string()
-                .trim()
                 .required()
                 .min(DEFAULT.TITLE_MIN)
                 .max(DEFAULT.TITLE_MAX),
             description: yup
                 .string()
-                .trim()
                 .required()
                 .min(DEFAULT.DESC_MIN)
                 .max(DEFAULT.DESC_MAX),
         });
 
+        return schema.validate(obj, STRIP_UNKNOWN);
+    }
+
+    static async search(obj) {
+        const schema = yup
+            .string()
+            .max(40)
+            .required("keyword is required field");
         return schema.validate(obj, STRIP_UNKNOWN);
     }
 }
